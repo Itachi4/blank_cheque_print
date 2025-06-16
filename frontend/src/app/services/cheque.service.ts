@@ -47,6 +47,11 @@ export interface GeneratedChequeResponse {
     endNumber: number;
 }
 
+export interface LoginResponse {
+    message: string;
+    role: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -73,6 +78,10 @@ export class ChequeService {
 
     getTemplate(companyId: number, bankId: number): Observable<ChequeTemplate> {
         return this.http.get<ChequeTemplate>(`${this.apiUrl}/templates/${companyId}/${bankId}`);
+    }
+
+    login(email: string, password: string): Observable<LoginResponse> {
+        return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password });
     }
 
     generateCheques(accountId: number, count: number): Observable<GeneratedChequeResponse> {

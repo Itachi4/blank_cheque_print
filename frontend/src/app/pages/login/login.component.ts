@@ -1,31 +1,70 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ChequeService } from '../../services/cheque.service';
+
+// Angular Material Imports
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressSpinnerModule
+  ]
 })
-export class LoginComponent {
-  email: string = '';
-  password: string = '';
-  error = ' ';
+export class LoginComponent implements OnInit {
+  loginForm: FormGroup;
+  isLoading: boolean = false;
+  errorMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router) { }
-  login() {
-    this.authService.login(this.email, this.password).subscribe({
-      next: (res) => {
-        console.log("logged in successfully");
-        this.router.navigate(['/dashboard'])
+  constructor(
+    private fb: FormBuilder,
+    private chequeService: ChequeService,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+  }
+
+  onSubmit() {
+    this.errorMessage = '';
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.isLoading = true;
+    const { email, password } = this.loginForm.value;
+
+    this.chequeService.login(email, password).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        // Navigate to the Cheque Generator page
+        this.router.navigate(['/cheque-generator']);
       },
-      error: () => {
-        this.error = "Invalid username or password";
-      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = 'Login failed. Please check your credentials.';
+        console.error('Login error:', err);
+      }
     });
   }
 }
