@@ -19,6 +19,7 @@ export interface Account {
     number: string;
     bankId: number;
     lastCheck: number;
+    company?: { id: number; name: string };
 }
 
 export interface ChequeTemplate {
@@ -86,5 +87,9 @@ export class ChequeService {
 
     generateCheques(accountId: number, count: number): Observable<GeneratedChequeResponse> {
         return this.http.post<GeneratedChequeResponse>(`${this.apiUrl}/generate`, { accountId, count });
+    }
+
+    updateLastCheque(accountId: number, lastCheck: number) {
+        return this.http.patch(`${this.apiUrl}/accounts/${accountId}/last-cheque`, { lastCheck });
     }
 } 

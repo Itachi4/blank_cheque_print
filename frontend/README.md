@@ -1,27 +1,87 @@
-# Frontend
+# Cheque Generator Frontend – User Guide for Accountants
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.4.
+Welcome to the Cheque Generator! This guide will help you use the web application to generate, download, and manage cheques for your company. No technical knowledge is required.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 1. Getting Started
 
-## Code scaffolding
+- **Open your web browser** (Chrome, Edge, Firefox, etc.).
+- **Go to:** [http://localhost:4200/](http://localhost:4200/) (or the link provided by your IT team).
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## 2. Logging In
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- You will see a **Login** page.
+- Enter your **email** and **password** (provided by your administrator).
+- Click **Login**.
+- If your credentials are correct, you will be taken to the Cheque Generator page.
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## 3. Generating Cheques
 
-## Running end-to-end tests
+1. **Select Company:**
+   - Use the dropdown to choose the company for which you want to generate cheques.
+2. **Select Bank:**
+   - After selecting a company, choose the bank account from the next dropdown.
+3. **Select Account:**
+   - Pick the specific account number you want to use.
+   - The company name will be shown next to the account for clarity.
+4. **Enter Number of Cheques:**
+   - Type how many cheques you want to generate in one batch (e.g., 10).
+5. **Preview:**
+   - You will see a preview of the cheque template.
+   - The "Last Cheque Number" and "Next Cheque Number" are shown for your reference.
+6. **Generate Cheques:**
+   - Click the **Generate Cheques** button.
+   - The system will create a PDF file with the requested cheques.
+7. **Download Cheques:**
+   - After generation, a download button will appear in the "Generation History" section below.
+   - Click the download icon to open or save the PDF.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
+## 4. Manually Update Cheque Number
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+If a cheque is voided, skipped, or you need to correct the last cheque number:
+
+- Below the "Last Cheque Number" display, find the **Update Cheque Number** box.
+- Enter the new last cheque number (e.g., if the last valid cheque was 1050, enter 1050).
+- Click **Update**.
+- The "Last Cheque Number" and "Next Cheque Number" will update immediately.
+- This does **not** generate any cheques; it only updates the record.
+
+---
+
+## 5. Tips & Troubleshooting
+
+- **Dropdowns not loading?**
+  - Make sure you have selected a company first; banks and accounts depend on your selection.
+- **PDF not downloading?**
+  - Check your browser's pop-up blocker or try a different browser.
+- **Wrong cheque number?**
+  - Use the **Update Cheque Number** feature to correct it before generating new cheques.
+- **Login issues?**
+  - Double-check your email and password. If you still can't log in, contact your administrator.
+- **Page not loading?**
+  - Ensure the application is running (ask your IT team if unsure).
+
+---
+
+## 6. Security & Best Practices
+
+- Always log out or close your browser when finished, especially on shared computers.
+- Only authorized users should access the cheque generator.
+- Do not share your login credentials.
+
+---
+
+## 7. Need Help?
+
+If you have any questions or run into issues, please contact your company's IT support or the software provider.
+
+---
+
+**Thank you for using the Cheque Generator!**

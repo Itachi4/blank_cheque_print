@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 // Angular Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -31,7 +34,8 @@ import { ChequeService, Company, Bank, Account, ChequeTemplate } from '../../ser
         MatButtonModule,
         MatProgressSpinnerModule,
         MatListModule,
-        MatIconModule
+        MatIconModule,
+        FormsModule
     ]
 })
 export class ChequeGeneratorComponent implements OnInit {
@@ -43,10 +47,16 @@ export class ChequeGeneratorComponent implements OnInit {
     lastChequeNumber: number = 0;
     isGenerating: boolean = false;
     generationHistory: any[] = [];
+    updateChequeNumberValue: number | null = null;
+    updateChequeNumberError: string = '';
+    updateChequeNumberSuccess: string = '';
+    safeTemplateUrl: SafeResourceUrl | null = null;
 
     constructor(
         private fb: FormBuilder,
-        private chequeService: ChequeService
+        private chequeService: ChequeService,
+        private router: Router,
+        private sanitizer: DomSanitizer
     ) {
         this.chequeForm = this.fb.group({
             companyId: ['', Validators.required],
@@ -113,8 +123,14 @@ export class ChequeGeneratorComponent implements OnInit {
             template => {
                 if (template) {
                     this.selectedTemplate = { ...template, background: `http://localhost:3000/${template.background}` };
+                    if (this.selectedTemplate.background.endsWith('.pdf')) {
+                        this.safeTemplateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.selectedTemplate.background);
+                    } else {
+                        this.safeTemplateUrl = null;
+                    }
                 } else {
                     this.selectedTemplate = null;
+                    this.safeTemplateUrl = null;
                 }
             },
             error => console.error('Error loading template:', error)
@@ -169,5 +185,30 @@ export class ChequeGeneratorComponent implements OnInit {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    updateLastChequeNumber() {
+        this.updateChequeNumberError = '';
+        this.updateChequeNumberSuccess = '';
+        const accountId = this.chequeForm.get('accountId')?.value;
+        const newNumber = Number(this.updateChequeNumberValue);
+        if (!accountId || newNumber == null || isNaN(newNumber) || newNumber < 0) {
+            this.updateChequeNumberError = 'Please enter a valid cheque number.';
+            return;
+        }
+        this.chequeService.updateLastCheque(accountId, newNumber).subscribe({
+            next: (res: any) => {
+                this.updateChequeNumberSuccess = 'Cheque number updated!';
+                this.loadLastChequeNumber(accountId);
+            },
+            error: () => {
+                this.updateChequeNumberError = 'Failed to update cheque number.';
+            }
+        });
+    }
+
+    logout() {
+        localStorage.removeItem('isLoggedIn');
+        this.router.navigate(['/']);
     }
 } 

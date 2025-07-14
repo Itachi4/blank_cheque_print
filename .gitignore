@@ -1,0 +1,14 @@
+# Node
+node_modules/
+
+# Output PDFs and generated files
+backend/output/
+
+
+
+# Angular build
+frontend/dist/
+
+# Misc
+*.tmp
+*.swp 

@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatIconModule
   ]
 })
 export class LoginComponent implements OnInit {
@@ -57,6 +59,7 @@ export class LoginComponent implements OnInit {
     this.chequeService.login(email, password).subscribe({
       next: (response) => {
         this.isLoading = false;
+        localStorage.setItem('isLoggedIn', 'true');
         // Navigate to the Cheque Generator page
         this.router.navigate(['/cheque-generator']);
       },

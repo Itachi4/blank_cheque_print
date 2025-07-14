@@ -1,4 +1,9 @@
 <div class="cheque-generator-container">
+    <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem;">
+        <button mat-stroked-button color="primary" (click)="logout()" style="margin-left: auto;">
+            <mat-icon>logout</mat-icon> Logout
+        </button>
+    </div>
     <mat-card class="generator-card">
         <mat-card-header>
             <mat-card-title>Cheque Generator</mat-card-title>
@@ -37,7 +42,7 @@
                     <mat-label>Select Account</mat-label>
                     <mat-select formControlName="accountId" [disabled]="!accounts.length">
                         <mat-option *ngFor="let account of accounts" [value]="account.id">
-                            {{account.number}}
+                            {{account.number}}<span *ngIf="account.company"> ({{account.company.name}})</span>
                         </mat-option>
                     </mat-select>
                     <mat-error *ngIf="chequeForm.get('accountId')?.hasError('required')">
@@ -67,7 +72,13 @@
                 <div class="template-preview" *ngIf="selectedTemplate">
                     <h3>Cheque Template Preview</h3>
                     <div class="preview-container">
-                        <img [src]="selectedTemplate.background" alt="Cheque Template">
+                        <ng-container *ngIf="selectedTemplate.background.endsWith('.pdf'); else imagePreview">
+                            <embed [src]="safeTemplateUrl" type="application/pdf" width="100%" height="400px" />
+                        </ng-container>
+                        <ng-template #imagePreview>
+                            <img [src]="selectedTemplate.background" alt="Cheque Template"
+                                style="max-width:100%; height:auto;" />
+                        </ng-template>
                     </div>
                 </div>
 
@@ -78,6 +89,21 @@
                     <span *ngIf="!isGenerating">Generate Cheques</span>
                 </button>
             </form>
+
+            <!-- Manual Update Cheque Number UI (moved outside form) -->
+            <div *ngIf="chequeForm.get('accountId')?.value && lastChequeNumber !== null" style="margin-top: 1rem;">
+                <mat-form-field appearance="outline" style="width: 200px;">
+                    <mat-label>Update Cheque Number</mat-label>
+                    <input matInput type="number" [(ngModel)]="updateChequeNumberValue" min="0">
+                </mat-form-field>
+                <button mat-stroked-button color="primary" (click)="updateLastChequeNumber()" style="margin-left: 8px;">
+                    Update
+                </button>
+                <div *ngIf="updateChequeNumberError" style="color: red; margin-top: 4px;">{{updateChequeNumberError}}
+                </div>
+                <div *ngIf="updateChequeNumberSuccess" style="color: green; margin-top: 4px;">
+                    {{updateChequeNumberSuccess}}</div>
+            </div>
         </mat-card-content>
     </mat-card>
 
